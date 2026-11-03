@@ -34,11 +34,11 @@ minuteCalories_df: DataFrame = pd.read_csv(PATH + "minuteCaloriesNarrow_merged.c
 minuteIntensities_df: DataFrame = pd.read_csv(
     PATH + "minuteIntensitiesNarrow_merged.csv"
 )
-minuteSteps_df: DataFrame = pd.read_csv(PATH + "minuteMETsNarrow_merged.csv")
+minuteMETsNarrow_df: DataFrame = pd.read_csv(PATH + "minuteMETsNarrow_merged.csv")
 
 
 minute: DataFrame = merge_dataframes(
-    [minuteCalories_df, minuteIntensities_df, minuteSteps_df], ["Id", "ActivityMinute"]
+    [minuteCalories_df, minuteIntensities_df, minuteMETsNarrow_df], ["Id", "ActivityMinute"]
 )
 
 print("-- minute -- ")
