@@ -16,9 +16,15 @@ def merge_dataframes(dfs: list[DataFrame], key_values: list[str]) -> DataFrame:
 
 PATH = "data/4.12.16-5.12.16/"
 
-hourlyCalories_df: DataFrame = pd.read_csv(PATH + "hourlyCalories_merged.csv")
-hourlyIntensities_df: DataFrame = pd.read_csv(PATH + "hourlyIntensities_merged.csv")
-hourlySteps_df: DataFrame = pd.read_csv(PATH + "hourlySteps_merged.csv")
+hourlyCalories_df: DataFrame = pd.read_csv(
+    PATH + "hourlyCalories_merged.csv", parse_dates=["ActivityHour"]
+)
+hourlyIntensities_df: DataFrame = pd.read_csv(
+    PATH + "hourlyIntensities_merged.csv", parse_dates=["ActivityHour"]
+)
+hourlySteps_df: DataFrame = pd.read_csv(
+    PATH + "hourlySteps_merged.csv", parse_dates=["ActivityHour"]
+)
 
 
 hourly: DataFrame = merge_dataframes(
@@ -30,15 +36,20 @@ print("Shape:", hourly.shape)
 print("Missing values:", hourly.isna().sum())
 print("Unique Ids:", hourly["Id"].nunique())
 
-minuteCalories_df: DataFrame = pd.read_csv(PATH + "minuteCaloriesNarrow_merged.csv")
-minuteIntensities_df: DataFrame = pd.read_csv(
-    PATH + "minuteIntensitiesNarrow_merged.csv"
+minuteCalories_df: DataFrame = pd.read_csv(
+    PATH + "minuteCaloriesNarrow_merged.csv", parse_dates=["ActivityMinute"]
 )
-minuteMETsNarrow_df: DataFrame = pd.read_csv(PATH + "minuteMETsNarrow_merged.csv")
+minuteIntensities_df: DataFrame = pd.read_csv(
+    PATH + "minuteIntensitiesNarrow_merged.csv", parse_dates=["ActivityMinute"]
+)
+minuteMETsNarrow_df: DataFrame = pd.read_csv(
+    PATH + "minuteMETsNarrow_merged.csv", parse_dates=["ActivityMinute"]
+)
 
 
 minute: DataFrame = merge_dataframes(
-    [minuteCalories_df, minuteIntensities_df, minuteMETsNarrow_df], ["Id", "ActivityMinute"]
+    [minuteCalories_df, minuteIntensities_df, minuteMETsNarrow_df],
+    ["Id", "ActivityMinute"],
 )
 
 print("-- minute -- ")
