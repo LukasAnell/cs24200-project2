@@ -1,4 +1,4 @@
-from pandas import DataFrame, Series
+from pandas import DataFrame
 from plotnine import (
     aes,
     element_text,
@@ -10,7 +10,7 @@ from plotnine import (
     theme_minimal,
 )
 
-from process import load_daily_activity
+from process import load_daily_activity, load_sleep
 
 
 def select_users(df: DataFrame, min_days, n=5, seed=1) -> list:
@@ -57,5 +57,36 @@ def plot_1c():
     )
 
 
+def plot_1b():
+    sleepDay_df = load_sleep()
+    sleepDay_df = sleepDay_df.drop_duplicates(subset=["Id", "Date"])
+
+    random_users = select_users(sleepDay_df, 25)
+    print(random_users)
+
+    filtered_sleepDay_df = filter_users(sleepDay_df, random_users)
+
+    print(
+        "min/max/mean:",
+        filtered_sleepDay_df.groupby(by="Id", as_index=False)["TotalMinutesAsleep"].agg(
+            ["min", "max", "mean"]
+        ),
+    )
+
+    total_days = (sleepDay_df["Date"].max() - sleepDay_df["Date"].min()).days + 1
+    present = filtered_sleepDay_df.groupby("Id")["Date"].nunique()
+    missing = total_days - present
+    print("Missing days:", missing)
+
+    plot_user_lines(
+        filtered_sleepDay_df,
+        "TotalMinutesAsleep",
+        "Minutes Asleep",
+        "Minutes Asleep Over Time by ID",
+        "minutes_asleep_by_id.png",
+    )
+
+
 if __name__ == "__main__":
-    plot_1c()
+    # plot_1c()
+    plot_1b()
