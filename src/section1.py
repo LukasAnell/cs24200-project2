@@ -3,6 +3,7 @@ from plotnine import (
     aes,
     element_text,
     geom_line,
+    geom_point,
     ggplot,
     labs,
     scale_x_date,
@@ -101,6 +102,25 @@ def plot_1d():
             ["min", "max", "first", "last"]
         ),
     )
+
+    print("Number of records:", len(sorted_df))
+    print("Distinct days:", sorted_df["Date"].dt.normalize().nunique())
+    print("IsManualReport:", sorted_df["IsManualReport"].value_counts())
+    print("min, max:", sorted_df["Date"].min(), sorted_df["Date"].max())
+
+    plot = (
+        ggplot(sorted_df, aes(x="Date", y="WeightKg"))
+        + geom_line(size=1)
+        + geom_point(size=2)
+        + scale_x_date(date_breaks="1 week", date_labels="%b %d")
+        + labs(
+            x="Date", y="Weight (kg)", title=f"Weight Tracking Over Time: {top_user}"
+        )
+        + theme_minimal()
+        + theme(axis_text_x=element_text(rotation=45, hjust=1), figure_size=(8, 4.5))
+    )
+
+    plot.save("weightKb_by_date.png")
 
 
 if __name__ == "__main__":
