@@ -1,6 +1,9 @@
 import pandas as pd
 from pandas import DataFrame
 
+PATH = "data/4.12.16-5.12.16/"
+DATE_FORMAT = "%m/%d/%Y %I:%M:%S %p"
+
 
 def merge_dataframes(dfs: list[DataFrame], key_values: list[str]) -> DataFrame:
     first: DataFrame = dfs[0]
@@ -14,25 +17,21 @@ def merge_dataframes(dfs: list[DataFrame], key_values: list[str]) -> DataFrame:
     return df
 
 
-PATH = "data/4.12.16-5.12.16/"
+def load_with_date(filename: str, column: str, fmt: str) -> DataFrame:
+    df: DataFrame = pd.read_csv(PATH + filename)
+    df["Date"] = pd.to_datetime(df[column], format=fmt)
+    return df.drop(columns=column)
 
-hourlyCalories_df: DataFrame = pd.read_csv(PATH + "hourlyCalories_merged.csv")
-hourlyCalories_df["Date"] = pd.to_datetime(
-    hourlyCalories_df["ActivityHour"], format="%m/%d/%Y %I:%M:%S %p"
-)
-hourlyCalories_df = hourlyCalories_df.drop(columns="ActivityHour")
 
-hourlyIntensities_df: DataFrame = pd.read_csv(PATH + "hourlyIntensities_merged.csv")
-hourlyIntensities_df["Date"] = pd.to_datetime(
-    hourlyIntensities_df["ActivityHour"], format="%m/%d/%Y %I:%M:%S %p"
+hourlyCalories_df = load_with_date(
+    "hourlyCalories_merged.csv", "ActivityHour", DATE_FORMAT
 )
-hourlyIntensities_df = hourlyIntensities_df.drop(columns="ActivityHour")
 
-hourlySteps_df: DataFrame = pd.read_csv(PATH + "hourlySteps_merged.csv")
-hourlySteps_df["Date"] = pd.to_datetime(
-    hourlySteps_df["ActivityHour"], format="%m/%d/%Y %I:%M:%S %p"
+hourlyIntensities_df = load_with_date(
+    "hourlyIntensities_merged.csv", "ActivityHour", DATE_FORMAT
 )
-hourlySteps_df = hourlySteps_df.drop(columns="ActivityHour")
+
+hourlySteps_df = load_with_date("hourlySteps_merged.csv", "ActivityHour", DATE_FORMAT)
 
 hourly: DataFrame = merge_dataframes(
     [hourlyCalories_df, hourlyIntensities_df, hourlySteps_df], ["Id", "Date"]
@@ -48,25 +47,17 @@ print("Unique hours:", hourly["Date"].dt.hour.unique())
 print(hourly[hourly["Date"].dt.hour.isin([0, 12])].head(4))
 
 
-minuteCalories_df: DataFrame = pd.read_csv(PATH + "minuteCaloriesNarrow_merged.csv")
-minuteCalories_df["Date"] = pd.to_datetime(
-    minuteCalories_df["ActivityMinute"], format="%m/%d/%Y %I:%M:%S %p"
+minuteCalories_df = load_with_date(
+    "minuteCaloriesNarrow_merged.csv", "ActivityMinute", DATE_FORMAT
 )
-minuteCalories_df = minuteCalories_df.drop(columns="ActivityMinute")
 
-minuteIntensities_df: DataFrame = pd.read_csv(
-    PATH + "minuteIntensitiesNarrow_merged.csv"
+minuteIntensities_df = load_with_date(
+    "minuteIntensitiesNarrow_merged.csv", "ActivityMinute", DATE_FORMAT
 )
-minuteIntensities_df["Date"] = pd.to_datetime(
-    minuteIntensities_df["ActivityMinute"], format="%m/%d/%Y %I:%M:%S %p"
-)
-minuteIntensities_df = minuteIntensities_df.drop(columns="ActivityMinute")
 
-minuteMETsNarrow_df: DataFrame = pd.read_csv(PATH + "minuteMETsNarrow_merged.csv")
-minuteMETsNarrow_df["Date"] = pd.to_datetime(
-    minuteMETsNarrow_df["ActivityMinute"], format="%m/%d/%Y %I:%M:%S %p"
+minuteMETsNarrow_df = load_with_date(
+    "minuteMETsNarrow_merged.csv", "ActivityMinute", DATE_FORMAT
 )
-minuteMETsNarrow_df = minuteMETsNarrow_df.drop(columns="ActivityMinute")
 
 minute: DataFrame = merge_dataframes(
     [minuteCalories_df, minuteIntensities_df, minuteMETsNarrow_df],
@@ -82,11 +73,9 @@ print("Months:", minute["Date"].dt.month.unique())
 print("Unique hours:", minute["Date"].dt.hour.unique())
 print(minute[minute["Date"].dt.hour.isin([0, 12])].head(4))
 
-dailyActivity_df: DataFrame = pd.read_csv(PATH + "dailyActivity_merged.csv")
-dailyActivity_df["Date"] = pd.to_datetime(
-    dailyActivity_df["ActivityDate"], format="%m/%d/%Y"
+dailyActivity_df = load_with_date(
+    "dailyActivity_merged.csv", "ActivityDate", "%m/%d/%Y"
 )
-dailyActivity_df = dailyActivity_df.drop(columns="ActivityDate")
 
 print("-- dailyActivity -- ")
 print("Shape:", dailyActivity_df.shape)
@@ -96,10 +85,7 @@ print("Min, Max Date:", dailyActivity_df["Date"].agg(["min", "max"]))
 print("Months:", dailyActivity_df["Date"].dt.month.unique())
 print("Unique hours:", dailyActivity_df["Date"].dt.hour.unique())
 
-
-sleepDay_df: DataFrame = pd.read_csv(PATH + "sleepDay_merged.csv")
-sleepDay_df["Date"] = pd.to_datetime(sleepDay_df["SleepDay"], format="%m/%d/%Y %I:%M:%S %p")
-sleepDay_df = sleepDay_df.drop(columns="SleepDay")
+sleepDay_df = load_with_date("sleepDay_merged.csv", "SleepDay", DATE_FORMAT)
 
 print("-- sleepDay -- ")
 print("Shape:", sleepDay_df.shape)
