@@ -18,3 +18,17 @@ print("Shape:", filtered_dailyActivity_df.shape)
 print("df:", filtered_dailyActivity_df.head())
 
 print("nunique:", filtered_dailyActivity_df["Id"].nunique())
+
+print(
+    "min, max, mean:",
+    filtered_dailyActivity_df.groupby("Id")["TotalSteps"].agg(["min", "max", "mean"]),
+)
+
+print(
+    "zero step days:",
+    (filtered_dailyActivity_df["TotalSteps"] == 0)
+    .groupby(filtered_dailyActivity_df["Id"])
+    .sum(),
+)
+
+filtered_dailyActivity_df["Id"] = filtered_dailyActivity_df["Id"].astype("category")
