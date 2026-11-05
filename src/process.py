@@ -73,6 +73,12 @@ def build_heartrate() -> DataFrame:
     return DataFrame(df.groupby(["Id", "Date"], as_index=False)["Value"].mean())
 
 
+def build_heartrate_hourly() -> DataFrame:
+    df = build_heartrate()
+    df["Date"] = df["Date"].dt.floor("h")
+    return DataFrame(df.groupby(["Id", "Date"], as_index=False)["Value"].mean())
+
+
 def summarize(name, df):
     print(f"-- {name} -- ")
     print("Shape:", df.shape)
@@ -99,6 +105,9 @@ def main():
 
     heartrate_df = build_heartrate()
     summarize("heartrate", heartrate_df)
+
+    heartrate_hourly_df = build_heartrate_hourly()
+    summarize("heartrate hourly", heartrate_hourly_df)
 
 
 if __name__ == "__main__":

@@ -11,11 +11,24 @@ from plotnine import (
     theme_minimal,
 )
 
-from process import DATE_FORMAT, PATH, load_daily_activity, load_sleep, load_with_date
+from process import (
+    DATE_FORMAT,
+    build_heartrate_hourly,
+    load_daily_activity,
+    load_sleep,
+    load_with_date,
+)
 
 
 def select_users(df: DataFrame, min_days, n=5, seed=1) -> list:
     counts = df["Id"].value_counts()
+    qualifying_Ids = counts.loc[counts >= min_days].sort_index()
+    return qualifying_Ids.sample(n=n, random_state=seed).index.to_list()
+
+
+def select_users_by_days(df: DataFrame, min_days, n=5, seed=1) -> list:
+    days = df["Date"].dt.normalize()
+    counts = days.groupby(df["Id"]).nunique()
     qualifying_Ids = counts.loc[counts >= min_days].sort_index()
     return qualifying_Ids.sample(n=n, random_state=seed).index.to_list()
 
@@ -26,13 +39,21 @@ def filter_users(df: DataFrame, ids) -> DataFrame:
     return filtered_df
 
 
-def plot_user_lines(df: DataFrame, y: str, ylabel: str, title: str, filename: str):
+def plot_user_lines(
+    df: DataFrame,
+    y: str,
+    ylabel: str,
+    title: str,
+    filename: str,
+    line_size=1.0,
+    alpha=1.0,
+):
     plot = (
         ggplot(
             df,
             aes(x="Date", y=y, color="Id", group="Id"),
         )
-        + geom_line(size=1)
+        + geom_line(size=line_size, alpha=alpha)
         + scale_x_date(date_breaks="1 week", date_labels="%b %d")
         + labs(title=title, x="Date", y=ylabel, color="ID")
         + theme_minimal()
@@ -42,19 +63,36 @@ def plot_user_lines(df: DataFrame, y: str, ylabel: str, title: str, filename: st
     plot.save(filename)
 
 
-def plot_1c():
-    dailyActivity_df = load_daily_activity()
+def plot_1a():
+    heartrate_hourly_df = build_heartrate_hourly()
 
-    random_users = select_users(dailyActivity_df, 31)
+    random_users = select_users_by_days(heartrate_hourly_df, 28)
+    print(random_users)
 
-    filtered_dailyActivity_df = filter_users(dailyActivity_df, random_users)
+    days = heartrate_hourly_df["Date"].dt.normalize()
+    counts = days.groupby(heartrate_hourly_df["Id"]).nunique()
+    print("Days with readings:", counts.loc[random_users])
+
+    filtered_heartrate_hourly_df = filter_users(heartrate_hourly_df, random_users)
+    print(filtered_heartrate_hourly_df)
+
+    print("Shape:", filtered_heartrate_hourly_df.shape)
+
+    print(
+        "min/max/mean:",
+        filtered_heartrate_hourly_df.groupby(by="Id", as_index=False)["Value"].agg(
+            ["min", "max", "mean"]
+        ),
+    )
 
     plot_user_lines(
-        filtered_dailyActivity_df,
-        "TotalSteps",
-        "Total Steps",
-        "Total Steps Over Time by ID",
-        "total_steps_by_id.png",
+        filtered_heartrate_hourly_df,
+        "Value",
+        "Heart rate (bpm)",
+        "Heart Rate Over Time by ID",
+        "heart_rate_by_id.png",
+        line_size=0.5,
+        alpha=0.5,
     )
 
 
@@ -88,6 +126,22 @@ def plot_1b():
     )
 
 
+def plot_1c():
+    dailyActivity_df = load_daily_activity()
+
+    random_users = select_users(dailyActivity_df, 31)
+
+    filtered_dailyActivity_df = filter_users(dailyActivity_df, random_users)
+
+    plot_user_lines(
+        filtered_dailyActivity_df,
+        "TotalSteps",
+        "Total Steps",
+        "Total Steps Over Time by ID",
+        "total_steps_by_id.png",
+    )
+
+
 def plot_1d():
     weightLogInfo_df = load_with_date("weightLogInfo_merged.csv", "Date", DATE_FORMAT)
 
@@ -96,17 +150,17 @@ def plot_1d():
     filtered_weightLogInfo_df = weightLogInfo_df.loc[weightLogInfo_df["Id"] == top_user]
     sorted_df = filtered_weightLogInfo_df.sort_values(by="Date")
 
-    print(
-        "min/max/first/last:",
-        sorted_df.groupby(by="Id", as_index=False)["WeightKg"].agg(
-            ["min", "max", "first", "last"]
-        ),
-    )
-
-    print("Number of records:", len(sorted_df))
-    print("Distinct days:", sorted_df["Date"].dt.normalize().nunique())
-    print("IsManualReport:", sorted_df["IsManualReport"].value_counts())
-    print("min, max:", sorted_df["Date"].min(), sorted_df["Date"].max())
+    #     print(
+    #         "min/max/first/last:",
+    #         sorted_df.groupby(by="Id", as_index=False)["WeightKg"].agg(
+    #             ["min", "max", "first", "last"]
+    #         ),
+    #     )
+    #
+    #     print("Number of records:", len(sorted_df))
+    #     print("Distinct days:", sorted_df["Date"].dt.normalize().nunique())
+    #     print("IsManualReport:", sorted_df["IsManualReport"].value_counts())
+    #     print("min, max:", sorted_df["Date"].min(), sorted_df["Date"].max())
 
     plot = (
         ggplot(sorted_df, aes(x="Date", y="WeightKg"))
@@ -124,6 +178,7 @@ def plot_1d():
 
 
 if __name__ == "__main__":
-    # plot_1c()
+    plot_1a()
     # plot_1b()
-    plot_1d()
+    # plot_1c()
+    # plot_1d()
