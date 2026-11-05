@@ -66,7 +66,7 @@ def load_sleep() -> DataFrame:
 def build_heartrate() -> DataFrame:
     df = load_with_date("heartrate_seconds_merged.csv", "Time", DATE_FORMAT)
     df["Date"] = df["Date"].dt.floor("min")
-    return df
+    return DataFrame(df.groupby(["Id", "Date"], as_index=False)["Value"].mean())
 
 
 def summarize(name, df):
