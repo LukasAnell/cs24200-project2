@@ -23,74 +23,70 @@ def load_with_date(filename: str, column: str, fmt: str) -> DataFrame:
     return df.drop(columns=column)
 
 
-hourlyCalories_df = load_with_date(
-    "hourlyCalories_merged.csv", "ActivityHour", DATE_FORMAT
-)
+def build_hourly() -> DataFrame:
+    hourlyCalories_df = load_with_date(
+        "hourlyCalories_merged.csv", "ActivityHour", DATE_FORMAT
+    )
+    hourlyIntensities_df = load_with_date(
+        "hourlyIntensities_merged.csv", "ActivityHour", DATE_FORMAT
+    )
+    hourlySteps_df = load_with_date(
+        "hourlySteps_merged.csv", "ActivityHour", DATE_FORMAT
+    )
 
-hourlyIntensities_df = load_with_date(
-    "hourlyIntensities_merged.csv", "ActivityHour", DATE_FORMAT
-)
-
-hourlySteps_df = load_with_date("hourlySteps_merged.csv", "ActivityHour", DATE_FORMAT)
-
-hourly: DataFrame = merge_dataframes(
-    [hourlyCalories_df, hourlyIntensities_df, hourlySteps_df], ["Id", "Date"]
-)
-
-print("-- hourly -- ")
-print("Shape:", hourly.shape)
-print("Missing values:", hourly.isna().sum())
-print("Unique Ids:", hourly["Id"].nunique())
-print("Min, Max Date:", hourly["Date"].agg(["min", "max"]))
-print("Months:", hourly["Date"].dt.month.unique())
-print("Unique hours:", hourly["Date"].dt.hour.unique())
-print(hourly[hourly["Date"].dt.hour.isin([0, 12])].head(4))
+    return merge_dataframes(
+        [hourlyCalories_df, hourlyIntensities_df, hourlySteps_df], ["Id", "Date"]
+    )
 
 
-minuteCalories_df = load_with_date(
-    "minuteCaloriesNarrow_merged.csv", "ActivityMinute", DATE_FORMAT
-)
+def build_minute() -> DataFrame:
+    minuteCalories_df = load_with_date(
+        "minuteCaloriesNarrow_merged.csv", "ActivityMinute", DATE_FORMAT
+    )
+    minuteIntensities_df = load_with_date(
+        "minuteIntensitiesNarrow_merged.csv", "ActivityMinute", DATE_FORMAT
+    )
+    minuteMETsNarrow_df = load_with_date(
+        "minuteMETsNarrow_merged.csv", "ActivityMinute", DATE_FORMAT
+    )
 
-minuteIntensities_df = load_with_date(
-    "minuteIntensitiesNarrow_merged.csv", "ActivityMinute", DATE_FORMAT
-)
+    return merge_dataframes(
+        [minuteCalories_df, minuteIntensities_df, minuteMETsNarrow_df], ["Id", "Date"]
+    )
 
-minuteMETsNarrow_df = load_with_date(
-    "minuteMETsNarrow_merged.csv", "ActivityMinute", DATE_FORMAT
-)
 
-minute: DataFrame = merge_dataframes(
-    [minuteCalories_df, minuteIntensities_df, minuteMETsNarrow_df],
-    ["Id", "Date"],
-)
+def load_daily_activity() -> DataFrame:
+    return load_with_date("dailyActivity_merged.csv", "ActivityDate", "%m/%d/%Y")
 
-print("-- minute -- ")
-print("Shape:", minute.shape)
-print("Missing values:", minute.isna().sum())
-print("Unique Ids:", minute["Id"].nunique())
-print("Min, Max Date:", minute["Date"].agg(["min", "max"]))
-print("Months:", minute["Date"].dt.month.unique())
-print("Unique hours:", minute["Date"].dt.hour.unique())
-print(minute[minute["Date"].dt.hour.isin([0, 12])].head(4))
 
-dailyActivity_df = load_with_date(
-    "dailyActivity_merged.csv", "ActivityDate", "%m/%d/%Y"
-)
+def load_sleep() -> DataFrame:
+    return load_with_date("sleepDay_merged.csv", "SleepDay", DATE_FORMAT)
 
-print("-- dailyActivity -- ")
-print("Shape:", dailyActivity_df.shape)
-print("Missing values:", dailyActivity_df.isna().sum())
-print("Unique Ids:", dailyActivity_df["Id"].nunique())
-print("Min, Max Date:", dailyActivity_df["Date"].agg(["min", "max"]))
-print("Months:", dailyActivity_df["Date"].dt.month.unique())
-print("Unique hours:", dailyActivity_df["Date"].dt.hour.unique())
 
-sleepDay_df = load_with_date("sleepDay_merged.csv", "SleepDay", DATE_FORMAT)
+def summarize(name, df):
+    print(f"-- {name} -- ")
+    print("Shape:", df.shape)
+    print("Missing values:", df.isna().sum())
+    print("Unique Ids:", df["Id"].nunique())
+    print("Min, Max Date:", df["Date"].agg(["min", "max"]))
+    print("Months:", df["Date"].dt.month.unique())
+    print("Unique hours:", df["Date"].dt.hour.unique())
+    print(df[df["Date"].dt.hour.isin([0, 12])].head(4))
 
-print("-- sleepDay -- ")
-print("Shape:", sleepDay_df.shape)
-print("Missing values:", sleepDay_df.isna().sum())
-print("Unique Ids:", sleepDay_df["Id"].nunique())
-print("Min, Max Date:", sleepDay_df["Date"].agg(["min", "max"]))
-print("Months:", sleepDay_df["Date"].dt.month.unique())
-print("Unique hours:", sleepDay_df["Date"].dt.hour.unique())
+
+def main():
+    hourly = build_hourly()
+    summarize("hourly", hourly)
+
+    minute = build_minute()
+    summarize("minute", minute)
+
+    dailyActivity_df = load_daily_activity()
+    summarize("dailyActivity", dailyActivity_df)
+
+    sleepDay_df = load_sleep()
+    summarize("sleepDay", sleepDay_df)
+
+
+if __name__ == "__main__":
+    main()
