@@ -63,6 +63,12 @@ def load_sleep() -> DataFrame:
     return load_with_date("sleepDay_merged.csv", "SleepDay", DATE_FORMAT)
 
 
+def build_heartrate() -> DataFrame:
+    df = load_with_date("heartrate_seconds_merged.csv", "Time", DATE_FORMAT)
+    df["Date"] = df["Date"].dt.floor("min")
+    return df
+
+
 def summarize(name, df):
     print(f"-- {name} -- ")
     print("Shape:", df.shape)
@@ -86,6 +92,9 @@ def main():
 
     sleepDay_df = load_sleep()
     summarize("sleepDay", sleepDay_df)
+
+    heartrate_df = build_heartrate()
+    summarize("heartrate", heartrate_df)
 
 
 if __name__ == "__main__":
