@@ -60,30 +60,30 @@ def plot_user_lines(
         + theme(axis_text_x=element_text(rotation=45, hjust=1), figure_size=(10, 6))
     )
 
-    plot.save(filename)
+    plot.save("figures/" + filename)
 
 
 def plot_1a():
     heartrate_hourly_df = build_heartrate_hourly()
 
     random_users = select_users_by_days(heartrate_hourly_df, 28)
-    print(random_users)
+    # print(random_users)
 
-    days = heartrate_hourly_df["Date"].dt.normalize()
-    counts = days.groupby(heartrate_hourly_df["Id"]).nunique()
-    print("Days with readings:", counts.loc[random_users])
+    # days = heartrate_hourly_df["Date"].dt.normalize()
+    # counts = days.groupby(heartrate_hourly_df["Id"]).nunique()
+    # print("Days with readings:", counts.loc[random_users])
 
     filtered_heartrate_hourly_df = filter_users(heartrate_hourly_df, random_users)
-    print(filtered_heartrate_hourly_df)
-
-    print("Shape:", filtered_heartrate_hourly_df.shape)
-
-    print(
-        "min/max/mean:",
-        filtered_heartrate_hourly_df.groupby(by="Id", as_index=False)["Value"].agg(
-            ["min", "max", "mean"]
-        ),
-    )
+    #     print(filtered_heartrate_hourly_df)
+    #
+    #     print("Shape:", filtered_heartrate_hourly_df.shape)
+    #
+    #     print(
+    #         "min/max/mean:",
+    #         filtered_heartrate_hourly_df.groupby(by="Id", as_index=False)["Value"].agg(
+    #             ["min", "max", "mean"]
+    #         ),
+    #     )
 
     plot_user_lines(
         filtered_heartrate_hourly_df,
@@ -101,21 +101,21 @@ def plot_1b():
     sleepDay_df = sleepDay_df.drop_duplicates(subset=["Id", "Date"])
 
     random_users = select_users(sleepDay_df, 25)
-    print(random_users)
+    # print(random_users)
 
     filtered_sleepDay_df = filter_users(sleepDay_df, random_users)
 
-    print(
-        "min/max/mean:",
-        filtered_sleepDay_df.groupby(by="Id", as_index=False)["TotalMinutesAsleep"].agg(
-            ["min", "max", "mean"]
-        ),
-    )
-
-    total_days = (sleepDay_df["Date"].max() - sleepDay_df["Date"].min()).days + 1
-    present = filtered_sleepDay_df.groupby("Id")["Date"].nunique()
-    missing = total_days - present
-    print("Missing days:", missing)
+    #     print(
+    #         "min/max/mean:",
+    #         filtered_sleepDay_df.groupby(by="Id", as_index=False)["TotalMinutesAsleep"].agg(
+    #             ["min", "max", "mean"]
+    #         ),
+    #     )
+    #
+    #     total_days = (sleepDay_df["Date"].max() - sleepDay_df["Date"].min()).days + 1
+    #     present = filtered_sleepDay_df.groupby("Id")["Date"].nunique()
+    #     missing = total_days - present
+    #     print("Missing days:", missing)
 
     plot_user_lines(
         filtered_sleepDay_df,
@@ -174,11 +174,11 @@ def plot_1d():
         + theme(axis_text_x=element_text(rotation=45, hjust=1), figure_size=(8, 4.5))
     )
 
-    plot.save("weightKb_by_date.png")
+    plot.save("figures/weightKb_by_date.png")
 
 
 if __name__ == "__main__":
     plot_1a()
-    # plot_1b()
-    # plot_1c()
-    # plot_1d()
+    plot_1b()
+    plot_1c()
+    plot_1d()
