@@ -19,7 +19,11 @@ def merge_dataframes(dfs: list[DataFrame], key_values: list[str]) -> DataFrame:
 
 def load_with_date(filename: str, column: str, fmt: str) -> DataFrame:
     df: DataFrame = pd.read_csv(PATH + filename)
+
     df["Date"] = pd.to_datetime(df[column], format=fmt)
+
+    if column == "Date":
+        return df
     return df.drop(columns=column)
 
 

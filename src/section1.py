@@ -10,7 +10,7 @@ from plotnine import (
     theme_minimal,
 )
 
-from process import load_daily_activity, load_sleep
+from process import DATE_FORMAT, PATH, load_daily_activity, load_sleep, load_with_date
 
 
 def select_users(df: DataFrame, min_days, n=5, seed=1) -> list:
@@ -87,6 +87,23 @@ def plot_1b():
     )
 
 
+def plot_1d():
+    weightLogInfo_df = load_with_date("weightLogInfo_merged.csv", "Date", DATE_FORMAT)
+
+    top_user = weightLogInfo_df["Id"].value_counts().index[0]
+
+    filtered_weightLogInfo_df = weightLogInfo_df.loc[weightLogInfo_df["Id"] == top_user]
+    sorted_df = filtered_weightLogInfo_df.sort_values(by="Date")
+
+    print(
+        "min/max/first/last:",
+        sorted_df.groupby(by="Id", as_index=False)["WeightKg"].agg(
+            ["min", "max", "first", "last"]
+        ),
+    )
+
+
 if __name__ == "__main__":
     # plot_1c()
-    plot_1b()
+    # plot_1b()
+    plot_1d()
