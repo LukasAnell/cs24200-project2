@@ -235,6 +235,24 @@ def plot_3_4():
     )
     print("Days with sedentary < asleep:", (sedentary < asleep).sum())
 
+    lightly: Series = merged_df.loc[:, "LightlyActiveMinutes"]
+    fairly: Series = merged_df.loc[:, "FairlyActiveMinutes"]
+    very: Series = merged_df.loc[:, "VeryActiveMinutes"]
+    logged: Series = sedentary + lightly + fairly + very
+    leftover: Series = 1440 - logged
+
+    print(
+        "Days where sedentary + lightly + fairly + very == 1440:",
+        (logged == 1440).sum(),
+        "of",
+        len(merged_df),
+    )
+    print("Leftover minutes (1440 - sum) median:", leftover.median())
+    print("Minutes asleep median:", asleep.median())
+
+    print("r (leftover minutes, minutes asleep):", round(leftover.corr(asleep), 4))
+    print("Median (leftover - asleep):", (leftover - asleep).median())
+
     print(
         merged_df.sort_values(by="SedentaryMinutes")
         .loc[:, ["Id", "Date", "TotalMinutesAsleep", "SedentaryMinutes", "TotalSteps"]]
