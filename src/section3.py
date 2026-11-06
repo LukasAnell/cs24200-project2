@@ -1,8 +1,8 @@
 import numpy as np
 from pandas import DataFrame, Series
-from plotnine import aes, geom_point, ggplot, labs, theme_minimal
+from plotnine import aes, geom_abline, geom_point, ggplot, labs, theme_minimal
 
-from process import build_hourly
+from process import build_hourly, load_sleep
 
 
 def check_intensity_columns(df: DataFrame):
@@ -89,5 +89,42 @@ def plot_3_1():
     print(round(cols.corr()["Calories"], 4))
 
 
+def plot_3_2():
+    sleep_df = load_sleep()
+    sleep_df = sleep_df.drop_duplicates(subset=["Id", "Date"])
+
+    asleep: Series = sleep_df.loc[:, "TotalMinutesAsleep"]
+    in_bed: Series = sleep_df.loc[:, "TotalTimeInBed"]
+    records: Series = sleep_df.loc[:, "TotalSleepRecords"]
+    gap: Series = in_bed - asleep
+
+    print("Rows:", len(sleep_df), "Users:", sleep_df["Id"].nunique())
+    print("Missing values:", sleep_df.isna().sum().sum())
+    print("Asleep > in bed:", (asleep > in_bed).sum())
+    print("Gap (min) min/median/max:", gap.min(), gap.median(), gap.max())
+    print("Gap > 60 min:", (gap > 60).sum(), " Gap > 120 min:", (gap > 120).sum())
+    print("Pearson r:", round(asleep.corr(in_bed), 4))
+
+    print(gap.groupby(records).agg(["count", "mean", "max"]))
+
+    sleep_df = sleep_df.assign(Gap=gap)
+    print(sleep_df.sort_values(by="Gap", ascending=False).head(10))
+
+    plot = (
+        ggplot(sleep_df, aes(x="TotalTimeInBed", y="TotalMinutesAsleep"))
+        + geom_abline(slope=1, intercept=0, linetype="dashed", color="red")
+        + geom_point(alpha=0.5)
+        + labs(
+            title="Minutes Asleep vs Time in Bed",
+            x="Time in bed (minutes)",
+            y="Minutes asleep",
+        )
+        + theme_minimal()
+    )
+
+    plot.save("figures/asleep_vs_in_bed.png")
+
+
 if __name__ == "__main__":
-    plot_3_1()
+    # plot_3_1()
+    plot_3_2()
