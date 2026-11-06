@@ -68,7 +68,61 @@
 
 \subsection{Hourly and Minutely Data}
 
+To build the hourly dataframe, I merged \texttt{hourlySteps}, \texttt{hourlyIntensities}, and \texttt{hourlyCalories} on the user \texttt{Id} and the datetime of each reading.
+Similarly, the minutely dataframe merges \texttt{minuteCaloriesNarrow}, \textt{minuteIntensitiesNarrow}, and \texttt{minuteMETsNarrow}.
+I used outer merges and also checked that each merged dataframe was one-to-one, so that a duplicate key would raise an error.
+In terms of shape, the hourly dataframe has 22,099 rows and 33 users, and the minutely dataframe has 1,325,580 rows and the same set of 33 users.
+Neither dataframe has missing values.
+
+The time columns were stored as 12-hour string like \texttt{4/12/2016 12:00:00 AM}, so I converted them with an explicit format and put them into a new column named \texttt{Date}.
+I did the same for \texttt{dailyActivity} and \texttt{sleepDay}.
+I checked that the conversion worked by confirming that the dates only fall in April and May 2016, that all 24 hours appear, and that 12:00 AM and 12:00 PM were read correctly.
+After creating \texttt{Date}, I chose to drop each dataframe's respective date column.
+
+\begin{verbatim}
+Hourly:
+            Id  Calories                Date  TotalIntensity  AverageIntensity  StepTotal
+0   1503960366        81 2016-04-12 00:00:00              20          0.333333        373
+12  1503960366        73 2016-04-12 12:00:00              11          0.183333        253
+24  1503960366        69 2016-04-13 00:00:00              14          0.233333        144
+36  1503960366        82 2016-04-13 12:00:00              15          0.250000        486
+
+Minutely:
+           Id  Calories                Date  Intensity  METs
+0  1503960366    0.7865 2016-04-12 00:00:00          0    10
+1  1503960366    0.7865 2016-04-12 00:01:00          0    10
+2  1503960366    0.7865 2016-04-12 00:02:00          0    10
+3  1503960366    0.7865 2016-04-12 00:03:00          0    10
+
+dailyActivity (selected columns):
+           Id  TotalSteps  LightlyActiveMinutes  SedentaryMinutes  Calories       Date
+0  1503960366       13162                   328               728      1985 2016-04-12
+1  1503960366       10735                   217               776      1797 2016-04-13
+2  1503960366       10460                   181              1218      1776 2016-04-14
+3  1503960366        9762                   209               726      1745 2016-04-15
+
+sleepDay:
+           Id  TotalSleepRecords  TotalMinutesAsleep  TotalTimeInBed       Date
+0  1503960366                  1                 327             346 2016-04-12
+1  1503960366                  2                 384             407 2016-04-13
+2  1503960366                  1                 412             442 2016-04-15
+3  1503960366                  2                 340             367 2016-04-16
+\end{verbatim}
+
 \subsection{Heart Rate}
+
+The heart rate file has a new reading about every five seconds, so I rounded each timestamp down to the minute and took the mean of each minute's readings to get the average heart rate per minute.
+This left me with 333,420 rows for 14 users.
+I stored the result in its own dataframe instead of adding it to the minutely dataframe, because only 14 out of the 33 users have heart rate data, and the heart rate data only runs until 16:20 on May 12th, while the minutely data ends at 15:59.
+Storing heart rate data in its own dataframe avoided losing extra data or having to fill in missing values.
+
+\begin{verbatim}
+             Id                Date      Value
+275  2022484408 2016-04-12 12:00:00  69.272727
+276  2022484408 2016-04-12 12:01:00  59.375000
+277  2022484408 2016-04-12 12:02:00  59.333333
+278  2022484408 2016-04-12 12:03:00  62.166667
+\end{verbatim}
 
 \section{Correlation and Plots (Section 3)}
 \label{sec:s3}
