@@ -110,6 +110,16 @@ def plot_3_2():
     sleep_df = sleep_df.assign(Gap=gap)
     print(sleep_df.sort_values(by="Gap", ascending=False).head(10))
 
+    large: DataFrame = sleep_df.loc[sleep_df["Gap"] > 60]
+    by_user = large.groupby("Id").size().sort_values(ascending=False)
+    print("Nights with gap > 60 per user head:")
+    print(by_user.head(5))
+    print("Top 2 users:", by_user.head(2).sum() / len(large))
+
+    repeated: DataFrame = sleep_df.loc[sleep_df["TotalTimeInBed"] == 961]
+    print("Nights with TotalTimeInBed == 961:")
+    print(repeated)
+
     plot = (
         ggplot(sleep_df, aes(x="TotalTimeInBed", y="TotalMinutesAsleep"))
         + geom_abline(slope=1, intercept=0, linetype="dashed", color="red")
