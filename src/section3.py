@@ -1,6 +1,6 @@
 import numpy as np
 from pandas import DataFrame, Series
-from plotnine import aes, geom_point, ggplot, labs, theme, theme_minimal
+from plotnine import aes, geom_point, ggplot, labs, theme_minimal
 
 from process import build_hourly
 
