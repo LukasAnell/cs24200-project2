@@ -187,7 +187,7 @@ def plot_3_3(n_users=3, min_days=31, seed=1):
         plot = (
             ggplot(user_df, aes(x="Hour", y="TotalIntensity"))
             + geom_col()
-            + scale_x_continuous(breaks=list(range(0, 24)))
+            + scale_x_continuous(breaks=list(range(24)))
             + scale_y_continuous(limits=(0, y_max))
             + labs(
                 title=f"Mean Intensity by Hour of Day: {user}",
