@@ -1,3 +1,5 @@
+from typing import Any
+
 from pandas import DataFrame, Series
 from scipy import stats
 
@@ -53,7 +55,7 @@ def welch_test(df: DataFrame, group_col: str, a: str, b: str, label: str):
     x: Series = df.loc[df[group_col] == a, "Calories"]
     y: Series = df.loc[df[group_col] == b, "Calories"]
 
-    result = stats.ttest_ind(x, y, equal_var=False)
+    result: Any = stats.ttest_ind(x, y, equal_var=False)
     ci = result.confidence_interval(confidence_level=1 - ALPHA)
 
     print(f"-- Welch two-sample t-test on all hourly rows: {label} ({a} - {b}) --")
