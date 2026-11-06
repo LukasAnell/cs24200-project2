@@ -1,5 +1,5 @@
 import numpy as np
-from pandas import DataFrame
+from pandas import DataFrame, Series
 from plotnine import aes, geom_point, ggplot, labs, theme, theme_minimal
 
 from process import build_hourly
@@ -17,15 +17,15 @@ def check_intensity_columns(df: DataFrame):
 
 
 def check_zero_step_outliers(df: DataFrame):
-    rows = df[(df["StepTotal"] == 0) & (df["Calories"] > 600)]
-    
+    rows: DataFrame = df.loc[(df["StepTotal"] == 0) & (df["Calories"] > 600)]
+
     print("0 Steps and Calories > 600:", len(rows))
     print(rows.sort_values(by=["Id", "Date"]))
     print(rows.groupby("Id").size())
-    print(
-        "Steps vs intensity r:",
-        round(df["StepTotal"].corr(df["TotalIntensity"]), 4),
-    )
+
+    steps: Series = df.loc[:, "StepTotal"]
+    intensity: Series = df.loc[:, "TotalIntensity"]
+    print("Steps vs intensity r:", round(steps.corr(intensity), 4))
 
 
 def plot_scatter(df: DataFrame, x: str, xlabel: str, title: str, filename: str):
@@ -63,14 +63,10 @@ def plot_3_1():
 
     check_zero_step_outliers(hourly_df)
 
-    print(
-        round(
-            hourly_df[
-                ["Calories", "StepTotal", "TotalIntensity", "AverageIntensity"]
-            ].corr()["Calories"],
-            4,
-        )
-    )
+    cols: DataFrame = hourly_df.loc[
+        :, ["Calories", "StepTotal", "TotalIntensity", "AverageIntensity"]
+    ]
+    print(round(cols.corr()["Calories"], 4))
 
 
 if __name__ == "__main__":
