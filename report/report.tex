@@ -1,0 +1,157 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{hyperref}
+
+\graphicspath{{../figures/}}
+
+\title{Project 2 Report: Fitbit Fitness Tracker Data}
+\author{Lukas Anell}
+\date{November 2026}
+
+\begin{document}
+\maketitle
+
+\section{Summary}
+
+\section{Introduction}
+
+\section{Distributions and Outliers (Section 1)}
+\label{sec:s1}
+
+\subsection{1(a) Heart Rate}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{heart_rate_by_id.png}
+	\caption{Hourly mean heart rate over time for five users.}
+	\label{fig:heart_rate}
+\end{figure}
+
+\subsection{1(b) Minutes Asleep}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{minutes_asleep_by_id.png}
+	\caption{Minutes asleep over time for five users.}
+	\label{fig:minutes_asleep}
+\end{figure}
+
+\subsection{1(c) Total Steps}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{total_steps_by_id.png}
+	\caption{Total steps per day over time for five users.}
+	\label{fig:total_steps}
+\end{figure}
+
+\subsection{1(d) Weight}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{weightKb_by_date.png}
+	\caption{Weight over time for the user with the most records.}
+	\label{fig:weight}
+\end{figure}
+
+\section{Data Processing (Section 2)}
+\label{sec:s2}
+
+\subsection{Hourly and Minutely Data}
+
+\subsection{Heart Rate}
+
+\section{Correlation and Plots (Section 3)}
+\label{sec:s3}
+
+\subsection{3.1 Calories vs.\ Steps and Intensity}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{calories_vs_steps.png}
+	\caption{Calories per hour vs.\ steps per hour.}
+	\label{fig:cal_steps}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{calories_vs_intensity.png}
+	\caption{Calories per hour vs.\ total intensity per hour.}
+	\label{fig:cal_intensity}
+\end{figure}
+
+\subsection{3.2 Minutes Asleep vs.\ Time in Bed}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{asleep_vs_in_bed.png}
+	\caption{Minutes asleep vs.\ time in bed (dashed line: $y = x$).}
+	\label{fig:asleep_bed}
+\end{figure}
+
+\subsection{3.3 Intensity over the Day}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{intensity_by_hour_2022484408.png}
+	\caption{Mean total intensity by hour of day, user 2022484408.}
+	\label{fig:hour_a}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{intensity_by_hour_7086361926.png}
+	\caption{Mean total intensity by hour of day, user 7086361926.}
+	\label{fig:hour_b}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{intensity_by_hour_2873212765.png}
+	\caption{Mean total intensity by hour of day, user 2873212765.}
+	\label{fig:hour_c}
+\end{figure}
+
+\subsection{3.4 Minutes Asleep vs.\ Sedentary Minutes}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{asleep_vs_sedentary.png}
+	\caption{Minutes asleep vs.\ sedentary minutes per day.}
+	\label{fig:asleep_sed}
+\end{figure}
+
+\section{T-tests (Section 4)}
+\label{sec:s4}
+
+\section{Conclusion}
+
+\section{Reflection}
+\label{sec:reflection}
+
+\subsection{Something I Understand Differently Now}
+
+
+
+\subsection{A Decision I Made}
+
+
+
+\subsection{A Moment of Uncertainty}
+
+
+
+\subsection{Looking Back}
+
+
+
+\end{document}
