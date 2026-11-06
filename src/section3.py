@@ -169,10 +169,10 @@ def plot_3_3(n_users=3, min_days=31, seed=1):
         )
         print(user_df.sort_values(by="TotalIntensity", ascending=False).head(3))
 
-    y_max = mean_df["TotalIntensity"].max() * 1.05
+    y_max = float(mean_df["TotalIntensity"].to_numpy().max()) * 1.05
 
     for user in users:
-        user_df: DataFrame = mean_df.loc[mean_df["Id"] == user]
+        user_df = mean_df.loc[mean_df["Id"] == user]
         plot = (
             ggplot(user_df, aes(x="Hour", y="TotalIntensity"))
             + geom_col()
