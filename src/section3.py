@@ -12,7 +12,7 @@ from plotnine import (
     theme_minimal,
 )
 
-from process import build_hourly, load_sleep
+from process import build_hourly, load_daily_activity, load_sleep
 from section1 import select_users_by_days
 
 
@@ -200,7 +200,76 @@ def plot_3_3(n_users=3, min_days=31, seed=1):
         plot.save(f"figures/intensity_by_hour_{user}.png")
 
 
+def plot_3_4():
+    sleep_df = load_sleep()
+    sleep_df = sleep_df.drop_duplicates(subset=["Id", "Date"])
+    activity_df = load_daily_activity()
+
+    merged_df = sleep_df.merge(
+        activity_df, on=["Id", "Date"], how="inner", validate="one_to_one"
+    )
+
+    print(
+        "Rows: sleep",
+        len(sleep_df),
+        "activity",
+        len(activity_df),
+        "merged",
+        len(merged_df),
+    )
+    print("Users:", merged_df["Id"].nunique())
+
+    asleep: Series = merged_df.loc[:, "TotalMinutesAsleep"]
+    sedentary: Series = merged_df.loc[:, "SedentaryMinutes"]
+
+    print(
+        "Missing values:",
+        merged_df[["TotalMinutesAsleep", "SedentaryMinutes"]].isna().sum().sum(),
+    )
+    print("Pearson r:", round(asleep.corr(sedentary), 4))
+    print(
+        "Sedentary min/median/max:",
+        sedentary.min(),
+        sedentary.median(),
+        sedentary.max(),
+    )
+    print("Days with sedentary < asleep:", (sedentary < asleep).sum())
+
+    print(
+        merged_df.sort_values(by="SedentaryMinutes")
+        .loc[:, ["Id", "Date", "TotalMinutesAsleep", "SedentaryMinutes", "TotalSteps"]]
+        .head(5)
+    )
+
+    print("r (users with >= 10 nights):")
+
+    for user in merged_df["Id"].unique():
+        user_df: DataFrame = merged_df.loc[merged_df["Id"] == user]
+
+        if len(user_df) < 10:
+            continue
+
+        user_asleep: Series = user_df.loc[:, "TotalMinutesAsleep"]
+        user_sedentary: Series = user_df.loc[:, "SedentaryMinutes"]
+
+        print(f"{user}: n={len(user_df)}, r={user_asleep.corr(user_sedentary):.3f}")
+
+    plot = (
+        ggplot(merged_df, aes(x="SedentaryMinutes", y="TotalMinutesAsleep"))
+        + geom_point(alpha=0.5)
+        + labs(
+            title="Minutes Asleep vs Sedentary Minutes (daily)",
+            x="Sedentary minutes (per day)",
+            y="Minutes asleep",
+        )
+        + theme_minimal()
+    )
+
+    plot.save("figures/asleep_vs_sedentary.png")
+
+
 if __name__ == "__main__":
     # plot_3_1()
     # plot_3_2()
-    plot_3_3()
+    # plot_3_3()
+    plot_3_4()
