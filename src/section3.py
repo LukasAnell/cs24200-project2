@@ -169,6 +169,17 @@ def plot_3_3(n_users=3, min_days=31, seed=1):
         )
         print(user_df.sort_values(by="TotalIntensity", ascending=False).head(3))
 
+        peak_hour = int(peak["Hour"])
+        at_peak: DataFrame = selected.loc[
+            (selected["Id"] == user) & (selected["Hour"] == peak_hour)
+        ]
+        values: Series = at_peak.loc[:, "TotalIntensity"]
+        print(
+            f"hour {peak_hour}, {len(values)} days: median {values.median():.1f}, "
+            f"std {values.std():.1f}, min {values.min()}, max {values.max()}, "
+            f"days > 60: {(values > 60).sum()}"
+        )
+
     y_max = float(mean_df["TotalIntensity"].to_numpy().max()) * 1.05
 
     for user in users:
