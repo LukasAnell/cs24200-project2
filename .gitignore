@@ -2,6 +2,17 @@ data/**/*
 !data/**/
 !data/**/.gitkeep
 
+# LaTeX build
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
+report/*.fls
+report/*.fdb_latexmk
+report/*.synctex.gz
+report/*.bbl
+report/*.blg
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
