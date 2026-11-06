@@ -1,8 +1,19 @@
 import numpy as np
 from pandas import DataFrame, Series
-from plotnine import aes, geom_abline, geom_point, ggplot, labs, theme_minimal
+from plotnine import (
+    aes,
+    geom_abline,
+    geom_col,
+    geom_point,
+    ggplot,
+    labs,
+    scale_x_continuous,
+    scale_y_continuous,
+    theme_minimal,
+)
 
 from process import build_hourly, load_sleep
+from section1 import select_users_by_days
 
 
 def check_intensity_columns(df: DataFrame):
@@ -135,6 +146,50 @@ def plot_3_2():
     plot.save("figures/asleep_vs_in_bed.png")
 
 
+def plot_3_3(n_users=3, min_days=31, seed=1):
+    hourly_df = build_hourly()
+
+    users = select_users_by_days(hourly_df, min_days, n=n_users, seed=seed)
+    print("Users:", users)
+
+    selected: DataFrame = hourly_df.loc[hourly_df["Id"].isin(users)]
+    selected = selected.assign(Hour=selected["Date"].dt.hour)
+
+    mean_df = DataFrame(
+        selected.groupby(["Id", "Hour"], as_index=False)["TotalIntensity"].mean()
+    )
+    print("Rows:", len(mean_df))
+
+    for user in users:
+        user_df: DataFrame = mean_df.loc[mean_df["Id"] == user]
+        peak = user_df.loc[user_df["TotalIntensity"].idxmax()]
+
+        print(
+            f"{user}: peak hour {int(peak['Hour'])}, mean intensity {peak['TotalIntensity']:.2f}"
+        )
+        print(user_df.sort_values(by="TotalIntensity", ascending=False).head(3))
+
+    y_max = mean_df["TotalIntensity"].max() * 1.05
+
+    for user in users:
+        user_df: DataFrame = mean_df.loc[mean_df["Id"] == user]
+        plot = (
+            ggplot(user_df, aes(x="Hour", y="TotalIntensity"))
+            + geom_col()
+            + scale_x_continuous(breaks=list(range(0, 24)))
+            + scale_y_continuous(limits=(0, y_max))
+            + labs(
+                title=f"Mean Intensity by Hour of Day: {user}",
+                x="Hour of day (0-23)",
+                y="Mean total intensity per hour",
+            )
+            + theme_minimal()
+        )
+
+        plot.save(f"figures/intensity_by_hour_{user}.png")
+
+
 if __name__ == "__main__":
     # plot_3_1()
-    plot_3_2()
+    # plot_3_2()
+    plot_3_3()
