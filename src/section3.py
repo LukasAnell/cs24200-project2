@@ -111,7 +111,7 @@ def plot_3_2():
     print(sleep_df.sort_values(by="Gap", ascending=False).head(10))
 
     large: DataFrame = sleep_df.loc[sleep_df["Gap"] > 60]
-    by_user = large.groupby("Id").size().sort_values(ascending=False)
+    by_user = large["Id"].value_counts()
     print("Nights with gap > 60 per user head:")
     print(by_user.head(5))
     print("Top 2 users:", by_user.head(2).sum() / len(large))
