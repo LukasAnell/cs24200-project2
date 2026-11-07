@@ -77,6 +77,16 @@ The longer ones could be real data, with the user just sleeping for a long time,
 	\label{fig:total_steps}
 \end{figure}
 
+For this plot, I used \texttt{TotalSteps} from the \texttt{dailyActivity} dataset, picking 5 of the 21 users have all 31 days at random.
+Four of the users tend to have between 5,000 to 15,000 steps per day, with means of about 8,700 to 14,800.
+
+The biggest outlier in this data is user 1927972279, who has at most 3,790 steps per day, and 14 days with 0 steps.
+On April 16, the recorded sedentary minutes were 1,440, so I think this and the other days this happened are days when the device wasn't worn or carried, rather than days with no walking at all, but that's just a guess.
+These days also pull down any averages that include this user.
+There are also high outliers, with users 80534675328 and 4388161847 having days of about 22,000 to 23,000 steps around April 25 and May 6, which is high but still possible.
+For the other users, 8053475328 had a low of 1,200 steps and 6962181067 had a low of 1,600 steps.
+These days were much smaller than their usual, and could be attributed to rest days or the day not being worn for part of the day.
+
 \subsection*{1(d) Weight}
 
 \begin{figure}[H]
