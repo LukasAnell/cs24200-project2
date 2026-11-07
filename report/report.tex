@@ -81,7 +81,7 @@ I did the same for \texttt{dailyActivity} and \texttt{sleepDay}.
 I checked that the conversion worked by confirming that the dates only fall in April and May 2016, that all 24 hours appear, and that 12:00 AM and 12:00 PM were read correctly.
 After creating \texttt{Date}, I chose to drop each dataframe's respective date column (\texttt{ActivityHour}, \texttt{ActivityDate}, \texttt{SleepDay}, etc.).
 
-{\footnotesize
+	{\footnotesize
 		\begin{verbatim}
 Hourly (only 00:00 and 12:00 rows):
             Id  Calories                Date  TotalIntensity  AverageIntensity  StepTotal
@@ -150,6 +150,25 @@ Storing heart rate data in its own dataframe avoided dropping heart rate minutes
 	\caption{Calories per hour vs.\ total intensity per hour.}
 	\label{fig:cal_intensity}
 \end{figure}
+
+Both plots use the data in the hourly dataframe, which has 22,099 rows and one point for each user and hour.
+The transparency of the plotted points was set to 0.15 so that dense areas can be told apart from single points.
+For the measure of intensity I used \texttt{TotalIntensity}, because \texttt{AverageIntensity} is just that divided by 60, and it gives the same correlation (see Section~\ref{sec:reflection}).
+Calories had a correlation of $r = 0.815$ with steps and $r = 0.897$ with intensity, which means intensity is the stronger linear predictor.
+Steps and intensity are also strongly correlated with each other, with $r = 0.896$, so they carry a lot of the same information.
+
+For both plots, the points don't go through zero.
+Even at 0 steps or 0 intensity, there is a baseline rate of about 50 to 100 calories, which I think can be attributed to the amount of calories the body burns just to stay alive.
+The steps plot is also mores pread out at any given step count.
+For example, calories range from about 125 to over 400 at the 2,500 steps per hour park, and there also seems to be two separate groups of points.
+By guess is that steps only count when walking or running, while intensity also measures effort in activities that don't add many steps, like cycling or lifting weights, so intensity separates those hours better.
+However, I can't confirm that theory just based off this data.
+
+There are 16 rows that have 0 steps and over 600 calories, which are the dark points at the left of the steps plot.
+I explain the reasoning of the dark points in Section~\ref{sec:reflection}.
+I left those outliers in the plots, but removing them gave correlations of $r = 0.846$ for steps and $r = 0.893$ for intensity.
+My answer doesn't depend on those duplicate rows, as intensity still has the higher correlation, but the gap did shrink from 0.082 to 0.048.
+Based on this, it's reasonable to conclude that intensity is more relevant to calories than steps, although correlation alone doesn't show that intensity causes the calories burned, and both are measured on the same device.
 
 \subsection{Minutes Asleep vs.\ Time in Bed}
 
