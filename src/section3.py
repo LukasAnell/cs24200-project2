@@ -287,7 +287,7 @@ def plot_3_4():
 
 
 if __name__ == "__main__":
-    # plot_3_1()
-    # plot_3_2()
-    # plot_3_3()
+    plot_3_1()
+    plot_3_2()
+    plot_3_3()
     plot_3_4()
