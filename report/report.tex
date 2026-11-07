@@ -13,6 +13,8 @@
 
 \graphicspath{{../figures/}}
 
+\setlength{\emergencystretch}{4em}
+
 \title{Project 2 Report: Fitbit Fitness Tracker Data}
 \author{Lukas Anell}
 \date{November 2026}
@@ -77,7 +79,7 @@ Neither dataframe has missing values.
 The time columns were stored as 12-hour strings like \texttt{4/12/2016 12:00:00 AM}, so I converted them with an explicit format and put them into a new column named \texttt{Date}.
 I did the same for \texttt{dailyActivity} and \texttt{sleepDay}.
 I checked that the conversion worked by confirming that the dates only fall in April and May 2016, that all 24 hours appear, and that 12:00 AM and 12:00 PM were read correctly.
-After creating \texttt{Date}, I chose to drop each dataframe's respective date column (\texttt{ActivityHour}, \texttt{ActivityDate}, \texttt{SleepDay}, etc.)
+After creating \texttt{Date}, I chose to drop each dataframe's respective date column (\texttt{ActivityHour}, \texttt{ActivityDate}, \texttt{SleepDay}, etc.).
 
 {\footnotesize
 		\begin{verbatim}
@@ -118,7 +120,7 @@ sleepDay (413 rows, before removing duplicates):
 The heart rate file has a new reading about every five seconds, so I rounded each timestamp down to the minute and took the mean of each minute's readings to get the average heart rate per minute.
 This left me with 333,420 rows for 14 users.
 I stored the result in its own dataframe instead of adding it to the minutely dataframe, because only 14 out of the 33 users have heart rate data, and the heart rate data only runs until 16:20 on May 12th, while the minutely data ends at 15:59.
-Storing heart rate data in its own dataframe avoided dropping heartrate minutes after 15:59 or adding missing values to other columns.
+Storing heart rate data in its own dataframe avoided dropping heart rate minutes after 15:59 or adding missing values to other columns.
 
 	{\footnotesize
 		\begin{verbatim}
@@ -197,21 +199,21 @@ Storing heart rate data in its own dataframe avoided dropping heartrate minutes 
 
 For both tests, the outcome was \texttt{Calories} per hour from the hourly dataframe.
 I used a significance level of $\alpha = 0.05$ with two-sided tests.
-My predictions before running anything was that day versus night would show the biggest difference in calories, because people are usually asleep at night and will only burn some baseline amount of calories.
+My predictions before running anything were that day versus night would show the biggest difference in calories, because people are usually asleep at night and will only burn some baseline amount of calories.
 For my case, I defined night as being from 22:00 to 05:59, with day being 06:00 to 21:59.
-These boundaries are mostly subjective, and are mostly based off my own sense of when people sleep, but also keeping in mind the intensity by hour plots in Section~3.3, where intensity was close to zero froma bout 1:00 to 5:00.
+These boundaries are mostly subjective, and are mostly based off my own sense of when people sleep, but also keeping in mind the intensity by hour plots in Section~3.3, where intensity was close to zero from about 1:00 to 5:00.
 I predicted that there would be the smallest difference between an odd versus an even day of the month, because it wouldn't make sense for what day it is to change how many calories someone burns, which makes it a good control group.
 
 \subsection{Choice of Test}
 
 Rows that come from the same user, and especially consecutive hours from the same user, are not independent of each other.
 A two-sample t-test on all 22,099 hourly rows would treat them as independent, which might make the results look more concrete than they actually are.
-To avoid that, I started by averaging each user's calories per hour within each group, and used one pair of values for each of the 33 users to run a paired t-test (\testt{scipy.stats.ttest\_rel}) on them.
+To avoid that, I started by averaging each user's calories per hour within each group, and used one pair of values for each of the 33 users to run a paired t-test (\texttt{scipy.stats.ttest\_rel}) on them.
 Then, each user is compared against themselves, which also removes variables such as body size differing between users from the comparison.
 The biggest tradeoff of this methodology is that the sample size drops from 22,099 rows to just 33 pairs.
 
 For both comparisons, the null hypothesis is that the mean of the per-user differences is zero, or $H_0: \mu_d = 0$, while the alternative is that it's not equal to zero, $H_1: \mu_d \neq 0$.
-For the first comparison, $d$ is the user's mean calories per hour during the day, subtracting those at night.
+For the first comparison, $d$ is the user's mean calories per hour during the day minus the mean at night.
 And for the second, $d$ is the user's mean on odd days minus that on even days.
 
 \subsection{Results}
@@ -233,7 +235,7 @@ Table~\ref{tab:ttests} shows the results, and the effect size is Cohen's $d_z$, 
 	\label{tab:ttests}
 \end{table}
 
-Users burned an average of 108.25 caloeries per hour during the day, which was 34.48 more than the 73.33 calories per hour burned at night.
+Users burned an average of 108.25 calories per hour during the day, which was 34.48 more than the 73.77 calories per hour burned at night.
 This is a large effect ($d_z = 1.60$), and I rejected the null hypothesis ($t(32) = 9.21$, $p = 1.7 \times 10^{-10}$).
 However, for odd versus even days, the averages were 97.00 and 96.42 calories per hour, which is a difference of just 0.58.
 For this comparison, I failed to reject the null hypothesis ($t(32) = 0.81$, $p = 0.42$).
@@ -246,12 +248,12 @@ For day versus night, it found a difference of 34.80 calories per hour (95\% CI 
 The main difference was that this had a much more extreme test statistic ($t = 49.5$, $p$ pretty much zero).
 For odd versus even days, it found a difference of 0.22 calories per hour ($t = 0.27$, $p = 0.79$).
 The conclusions based on Welch's tests are the same as the paired tests, but the p-value for day versus night is much smaller due to the large number of rows.
-The rows are also not independent, so I treat the paired test as the main resul.t
+The rows are also not independent, so I treat the paired test as the main result.
 
 \subsection{Interpretation and Limitations}
 
 Based on the data, both of my predictions were supported.
-The large difference in day versus night is plausible because most hours during the night are spent sleeping, wheen calories burned are mostly baseline, and the odd or even comparison acted as a control group with no meaningful difference.
+The large difference in day versus night is plausible because most hours during the night are spent sleeping, when calories burned are mostly baseline, and the odd or even comparison acted as a control group with no meaningful difference.
 There were a few limitations with my testing though, as the paired t-test assumes that the per-user differences are roughly normal, which I did not check with only 33 users.
 Each user counts equally to the comparison regardless how many days of data they have, and one user only had 88 hourly rows.
 I also only ran tests with two groupings, so while the results confirm my predictions for those two, I didn't search over all possible groupings to show that they really are the largest and smallest differences.
@@ -263,7 +265,7 @@ I also only ran tests with two groupings, so while the results confirm my predic
 
 \subsection{Something I Understand Differently Now}
 
-While working on 3.4, I expected SedentaryMinutes to include the time recorded in TotalMinutesAsleep.
+While working on 3.4, I expected \texttt{SedentaryMinutes} to include the time recorded in \texttt{TotalMinutesAsleep}.
 That would have meant they would have a positive relationship, where more sleep would go with more sedentary minutes.
 Instead, the two had a correlation of $r = -0.60$.
 To figure out why, I checked whether the sedentary, lightly active, fairly active, and very active minutes added up to the 1,440 minutes in a day on days with a sleep record, and it didn't add up once out of 410 days.
@@ -274,13 +276,13 @@ I can't confirm the tracker's exact rule based on the data, but now I understand
 
 \subsection{A Decision I Made}
 
-When working with intensity in 3.1, I wasn't sure whether to use TotalIntensity or AverageIntensity from the hourly data.
+When working with intensity in 3.1, I wasn't sure whether to use \texttt{TotalIntensity} or \texttt{AverageIntensity} from the hourly data.
 I thought that they might be the same measurement but on different scales, so I checked the data.
-\texttt{np.allclose} comparing AverageIntensity with TotalIntensity / 60 returned False, but the largest difference between them was only about $3.3 \times 10^{-7}$, which is something I'd expect if the values of AverageIntensity are rounded to six decimals.
+\texttt{np.allclose} comparing \texttt{AverageIntensity} with \texttt{TotalIntensity / 60} returned False, but the largest difference between them was only about $3.3 \times 10^{-7}$, which is something I'd expect if the values of \texttt{AverageIntensity} are rounded to six decimals.
 So the False most likely came from rounding and not from a real difference.
 The check returned True when using a tolerance of $10^{-6}$.
 Both columns also had the same correlation with calories ($r = 0.8966$) and gave the same scatterplot shape.
-Because they gave identical results, I chose to use TotalIntensity because it's an hourly total like steps and calories, which makes the plots easier to compare.
+Because they gave identical results, I chose to use \texttt{TotalIntensity} because it's an hourly total like steps and calories, which makes the plots easier to compare.
 
 \subsection{A Moment of Uncertainty}
 
