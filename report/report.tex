@@ -200,18 +200,40 @@ Storing heart rate data in its own dataframe avoided dropping heartrate minutes 
 
 \subsection{Something I Understand Differently Now}
 
-
+While working on 3.4, I expected SedentaryMinutes to include the time recorded in TotalMinutesAsleep.
+That would have meant they would have a positive relationship, where more sleep would go with more sedentary minutes.
+Instead, the two had a correlation of $r = -0.60$.
+To figure out why, I checked whether the sedentary, lightly active, fairly active, and very active minutes added up to the 1,440 minutes in a day on days with a sleep record, and it didn't add up once out of 410 days.
+The leftover minutes, which was calculated as 1,440 minus the sum of the four columns, had a median of 457, which was close to the median of 432.5 minutes asleep, and they had a correlation with minutes asleep at $r = 0.63$.
+This suggests that the tracker mostly leaves sleep out of sedentary time.
+A day always has 1,440 minutes, so more sleep leaves fewer minutes awake that can count as sedentary, and the negative sign is largely built into how the minutes are counted, rather than showing that sitting more negatively affects sleep.
+I can't confirm the tracker's exact rule based on the data, but now I understand that what a column measures depends on how the device defines it, not only what it's called.
 
 \subsection{A Decision I Made}
 
-
+When working with intensity in 3.1, I wasn't sure whether to use TotalIntensity or AverageIntensity from the hourly data.
+I thought that they might be the same measurement but on different scales, so I checked the data.
+\texttt{np.allclose} comparing AverageIntensity with TotalIntensity / 60 returned False, but the largest difference between them was only about $3.3 \times 10^{-7}$, which is something I'd expect if the values of AverageIntensity are rounded to six decimals.
+So the False most likely came from rounding and not from a real difference.
+The check returned True when using a tolerance of $10^{-6}$.
+Both columns also had the same correlation with calories ($r = 0.8966$) and gave the same scatterplot shape.
+Because they gave identical results, I chose to use TotalIntensity because it's an hourly total like steps and calories, which makes the plots easier to compare.
 
 \subsection{A Moment of Uncertainty}
 
-
+When plotting calories against steps and against intensity, I noticed that there was one especially dark point at 0 steps and about 670 calories in the steps plot, and it appeared at an intensity of around 165 out of 180 in the intensity plot.
+My first interpretation was that it might be exercise that just doesn't register as steps, such as cycling or rowing.
+But the point was solid black even though I had set the transparency to 0.15, so it couldn't just be a single observation.
+I filtered for rows with 0 steps and over 600 calories, and I found that there were 16 rows that were all from one user, and all in the 05:00 hour on different days, with 15 of them having exactly the same values (669 calories and 165 intensity).
+It would be very unlikely for real exercise to produce exactly identical values on 15 different mornings, so I think it's more likely that there was a recording error or some other artifact, but I can't confirm the cause just from looking at the data.
+By removing the 16 rows, the correlation for steps changed from 0.815 to 0.846, and from 0.897 to 0.893 for intensity, so my conclusion that intensity is the better predictor actually didn't depend on them.
 
 \subsection{Looking Back}
 
-
+If I did this again, I would start by checking every file for repeated or duplicate rows and suspicious maximum values, before interpreting any outliers.
+The 16 identical rows in 3.1 and the four nights with exactly 961 minutes in bed, which was a maximum in the dataset and from 2 different users, both looked like interesting findings when I first noticed them.
+I spent a long time trying to explain them before deciding to examine the data behind them.
+When inspecting the sleep data, I did find three exact duplicate rows, which kept me from double counting them.
+Next time, I would just write a short script that prints the most common repeated rows and each column's maximum for every file before making any plots.
 
 \end{document}
