@@ -193,6 +193,69 @@ Storing heart rate data in its own dataframe avoided dropping heartrate minutes 
 \section{T-tests}
 \label{sec:s4}
 
+\subsection{Setup and Predictions}
+
+For both tests, the outcome was \texttt{Calories} per hour from the hourly dataframe.
+I used a significance level of $\alpha = 0.05$ with two-sided tests.
+My predictions before running anything was that day versus night would show the biggest difference in calories, because people are usually asleep at night and will only burn some baseline amount of calories.
+For my case, I defined night as being from 22:00 to 05:59, with day being 06:00 to 21:59.
+These boundaries are mostly subjective, and are mostly based off my own sense of when people sleep, but also keeping in mind the intensity by hour plots in Section~3.3, where intensity was close to zero froma bout 1:00 to 5:00.
+I predicted that there would be the smallest difference between an odd versus an even day of the month, because it wouldn't make sense for what day it is to change how many calories someone burns, which makes it a good control group.
+
+\subsection{Choice of Test}
+
+Rows that come from the same user, and especially consecutive hours from the same user, are not independent of each other.
+A two-sample t-test on all 22,099 hourly rows would treat them as independent, which might make the results look more concrete than they actually are.
+To avoid that, I started by averaging each user's calories per hour within each group, and used one pair of values for each of the 33 users to run a paired t-test (\testt{scipy.stats.ttest\_rel}) on them.
+Then, each user is compared against themselves, which also removes variables such as body size differing between users from the comparison.
+The biggest tradeoff of this methodology is that the sample size drops from 22,099 rows to just 33 pairs.
+
+For both comparisons, the null hypothesis is that the mean of the per-user differences is zero, or $H_0: \mu_d = 0$, while the alternative is that it's not equal to zero, $H_1: \mu_d \neq 0$.
+For the first comparison, $d$ is the user's mean calories per hour during the day, subtracting those at night.
+And for the second, $d$ is the user's mean on odd days minus that on even days.
+
+\subsection{Results}
+
+All 33 users had data in every group.
+Table~\ref{tab:ttests} shows the results, and the effect size is Cohen's $d_z$, the mean difference divided by the standard deviation of the differences.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lccccc}
+		\toprule
+		Comparison       & Mean difference & 95\% CI         & $t(32)$ & $p$                   & $d_z$ \\
+		\midrule
+		Day $-$ night    & 34.48           & (26.85, 42.11)  & 9.21    & $1.7 \times 10^{-10}$ & 1.60  \\
+		Odd $-$ even day & 0.58            & ($-0.87$, 2.03) & 0.81    & 0.42                  & 0.14  \\
+		\bottomrule
+	\end{tabular}
+	\caption{Paired t-tests on per-user mean calories per hour (33 users). Differences are in calories per hour.}
+	\label{tab:ttests}
+\end{table}
+
+Users burned an average of 108.25 caloeries per hour during the day, which was 34.48 more than the 73.33 calories per hour burned at night.
+This is a large effect ($d_z = 1.60$), and I rejected the null hypothesis ($t(32) = 9.21$, $p = 1.7 \times 10^{-10}$).
+However, for odd versus even days, the averages were 97.00 and 96.42 calories per hour, which is a difference of just 0.58.
+For this comparison, I failed to reject the null hypothesis ($t(32) = 0.81$, $p = 0.42$).
+The confidence interval for this difference includes zero, so I found no evidence that calories differ depending on the day, but the interval can't rule out any difference of up to about 2 calories per hour.
+
+\subsection{Comparison with Welch's Test}
+
+For further comparison, I ran Welch's two-sample t-test on all hourly rows, without averaging by user.
+For day versus night, it found a difference of 34.80 calories per hour (95\% CI 33.42 to 36.18), which was almost the same as the paired test.
+The main difference was that this had a much more extreme test statistic ($t = 49.5$, $p$ pretty much zero).
+For odd versus even days, it found a difference of 0.22 calories per hour ($t = 0.27$, $p = 0.79$).
+The conclusions based on Welch's tests are the same as the paired tests, but the p-value for day versus night is much smaller due to the large number of rows.
+The rows are also not independent, so I treat the paired test as the main resul.t
+
+\subsection{Interpretation and Limitations}
+
+Based on the data, both of my predictions were supported.
+The large difference in day versus night is plausible because most hours during the night are spent sleeping, wheen calories burned are mostly baseline, and the odd or even comparison acted as a control group with no meaningful difference.
+There were a few limitations with my testing though, as the paired t-test assumes that the per-user differences are roughly normal, which I did not check with only 33 users.
+Each user counts equally to the comparison regardless how many days of data they have, and one user only had 88 hourly rows.
+I also only ran tests with two groupings, so while the results confirm my predictions for those two, I didn't search over all possible groupings to show that they really are the largest and smallest differences.
+
 \section*{Conclusion}
 
 \section{Reflection}
