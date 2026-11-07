@@ -38,6 +38,17 @@
 	\label{fig:heart_rate}
 \end{figure}
 
+Out of the 14 useres with heart rate data, 7 of them have at least 28 days of readings, and I picked 5 of them randomly using \texttt{random\_state=1}.
+The readings were about every 5 seconds, so I decided to take the mean of each minute and then the mean of each hour to make plotting them on one date axis was readable.
+The main tradeoff of this was that an hourly mean hides short peaks, so the real peaks are probably higher than what the plot actually shows.
+Most of the values for all 5 users fall between 45 and 120 beats per minute, and there seems to be a similar rise and fall daily for everyone.
+
+User 8877689391 sharp spikes on the graph are the result of some outliers that reach about 115 to 160 beats per minute once a day.
+An hourly mean that high suggests that the user might be giving a sustained effort at something like a workout, but of course this can't be verified.
+User 4558609924 has a spike of about 150 near May 8th, and 5577150313 has a spike of 110 to 130.
+The lowest values are around 43 to 50, and are attributed to users 5577150313 and 4388161847, which could be their resting heart rates during sleep.
+There's also a straight line between May 6 to May 9 for user 5577150313, which is just the plot connecting two points that have a gap in data.
+
 \subsection*{1(b) Minutes Asleep}
 
 \begin{figure}[H]
