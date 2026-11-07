@@ -254,7 +254,7 @@ However, the data can't tell me what the users were actually doing during the da
 
 This plot uses the 410 nights in \texttt{sleepDay}, after removing the 3 duplicates, joined to \texttt{dailyActivity} on the \texttt{Id} and \texttt{Date} columns.
 All 410 nights had a matching activity row, covering 24 users.
-The relationship is negative and quite strong, with $r = -0.60$, meaning that days with more sedentary minutes tend to have fewer minutes asleep.
+The relationship is negative and moderately strong, with $r = -0.60$, meaning that days with more sedentary minutes tend to have fewer minutes asleep.
 There are 21 days with over 1000 minutes, and all of them have between 58 and 437 minutes asleep.
 
 This result was the opposite of what I expected, because I had assumed that time asleep would also be counted as sedentary time, making their relationship positive.
@@ -267,14 +267,14 @@ However, this explanation isn't proven, because the data doesn't say how the tra
 
 There are some other possible causes that could be partly behind the pattern.
 The relationship isn't only a difference between users, as 13 out of the 15 users with at least 10 nights had a negative correlation within their own nights (from $-0.23$ to $-0.84$), and the other two were close to zero.
-A behavioral cause of this could be that people sleep less on days that they're very inactive, or that sleeping for very little time could lead to a more sedentary day, but this can't be proven only with the data.
+A behavioral cause of this could be that people sleep less on days that they're very inactive, or that sleeping for very little time could lead to a more sedentary day, but this can't be shown from the data alone.
 A day spent working at a desk or being sick could also be a factor that affects both numbers.
-Because of these other factors that aren't measured, correlation alone can't show that sedentary time causes less sleep, or vice-versa.
+Because of these other potential factors that aren't measured, correlation alone can't show that sedentary time causes less sleep, or vice-versa.
 
 There are also a few unusual points in the data.
-Two of the nights have about 0 sedentary minutes, along with very few steps on the same day, and a few others have 120 to 250 minutes of sedentary time.
+Two of the nights have about 0 sedentary minutes, along with very few steps on the same day, and a few others have under about 300.
 These days could be times when the tracker wasn't worn for most of the day, but I can't confirm that.
-I did leave them in the plot though, as there aren't very many outliers and the trend is still clear.
+I left them in the plot, as there aren't very many of them and the trend is still clear.
 
 \section{T-tests}
 \label{sec:s4}
