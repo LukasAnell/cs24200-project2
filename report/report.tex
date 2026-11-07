@@ -182,23 +182,23 @@ Based on this, it's reasonable to conclude that intensity is more relevant to ca
 This plot uses the \texttt{sleepDay} dataframe, which has 410 nights of data over 24 users after removing 3 duplicate rows.
 The points follow the dashed $y = x$ line very closely, and the correlation between the two columns is $r = 0.93$.
 None of the nights had more minutes asleep than minutes in bed, so every point is on or below the line.
-This is what I'd expect from the data because time spend asleep is most likely only part of the time in bed.
+This is what I'd expect from the data because time spent asleep is part of the time in bed.
 
-The distance below the line is the time spend in bed, but not asleep.
+The distance below the line is the time spent in bed, but not asleep.
 The median gap was 25.5 minutes, but there was a lot of variation, with a maximum of 371 minutes.
 Out of the 410 nights, 52 of them (about 13\%) had a gap of over an hour, with 30 of them having a gap of over two hours.
-Shorter nights are closer to the line, and most of the points further below the line are at a range of 300 to 600 minutes spend in bed.
+Shorter nights are closer to the line, and most of the points further below the line are at a range of 300 to 600 minutes spent in bed.
 
 Nights with larger gaps aren't spread evenly among the users.
-User 3977333714 accounts for 28 of the 52 nihts with a gap of over an hour, and all of that user's recorded nights had a gap over an hour.
+User 3977333714 accounts for 28 of the 52 nights with a gap of over an hour, and all of that user's recorded nights had a gap over an hour.
 This could mean that they regularly spend a lot of their time in bed awake.
 It could also mean that their tracker records sleep differently, but I can't know just based off the data.
 
-There are also four nights with the maximum time spend in bed over the whole dataset, at 961 minutes, and they account for the column of points at the right side of the plot.
+There are also four nights with the maximum time spent in bed over the whole dataset, at 961 minutes, and they account for the column of points at the right side of the plot.
 Three are from a single user and one is from a different user, and their minutes asleep range from about 590 to 800.
-Although I can't confirm it, I suspect that rather than four nights being the exact same length, that there may be some limit in how the tracker records time in bed.
+Although I can't confirm it, I suspect that, rather than four nights being the exact same length, there may be a limit in how the tracker records time in bed.
 
-Overall, minutes asleep is a very good predictor of time in bed, but time in bed is never smaller, and the size of the gap between the two depends on the user and the night.
+Overall, minutes asleep is a very good predictor of time in bed, but time in bed is never smaller than minutes asleep, and the size of the gap between the two depends on the user and the night.
 
 \subsection{Intensity over the Day}
 
