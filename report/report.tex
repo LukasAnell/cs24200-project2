@@ -223,6 +223,26 @@ Overall, minutes asleep is a very good predictor of time in bed, but time in bed
 	\label{fig:hour_c}
 \end{figure}
 
+Out of the 19 users with all 31 days of data, I picked 3 users at random (\texttt{seed=1}), so that each bar is an average over roughly the same number of days.
+Each bar is the mean \texttt{TotalIntensity} for the given hour of the day, and the three plots share the same y-axis so the heights can be compared directly.
+Because the bars represent the mean, they don't show how much an hour varies from day to day.
+
+All 3 of the users have almost no intensity from about 1:00 to 5:00, which is around the time I'd expect people to be asleep, but after that intensity tends to differ a lot.
+User 2022484408 is active froma bout 6:00 to 21:00, with the highest bar being at 9:00 (about 61), and with a second peak at 14:00 (about 52).
+User 7086361926 has a much lower baseline throughout the day (mostly under 20), but has two sharp spikes at 13:00 (\~53) and 17:00 (\~89).
+User 2873212765 has the flattest pattern starting at 5:00, peaking at 8:300 (about 42), and then staying between 15 and 35 until the evening.
+
+The users differ in both timing and peak height.
+User 7086361926 peaks in the later afternoon at 17:00, while the other two users peak in the morning, at 9:00 and 8:00.
+The peak of 7086361926 is also about twice as tall as the peak of 2873212765, and about 1.5 times as tall as the peak of user 2022484408.
+The users also end the day at different times, with 2022484408 being close to zero at 22:00, while 7086361926 still has very small values up to 23:00 and at 0:00 to 1:00.
+
+To check if a tall bar comes from a regular habit or if it comes from a few extreme days, I also looked at the daily values at each user's peak hour.
+For 7086361926 at the peak hour of 17:00, the median was 126.5, and 19 out of the 30 days were above 60, so the peak looks like it's a regular habit.
+User 2022484408 had a more irregular peak, with the median at 9:00 being only at 35 with a standard deviation of 53, and 13 of the 31 days were above 60.
+For 2873212765 at 8:00 the median was 33 and only 5 of 31 days were above 60, so the peak is pretty modest and the height is pretty normal for that hour.
+This data is limited however, as I can't tell what the users were actually doing during the day, for example whether the spike at 17:00 is an exercise routine or something else.
+
 \subsection{Minutes Asleep vs.\ Sedentary Minutes}
 
 \begin{figure}[H]
