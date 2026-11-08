@@ -24,6 +24,14 @@
 
 \section*{Summary}
 
+\begin{itemize}
+	\item \textbf{Outliers (Section 1):} the plots had a few clear outliers, such as the daily heart rate spikes of one user (up to about 160 beats per minute), 14 days with 0 steps for one user (13 of them with 1,440 sedentary minutes, which looks like the device not being worn), and a jump of 1.2 kg in one day in a manually entered weight record.
+	\item \textbf{Calories (3.1):} calories per hour are more strongly correlated with intensity ($r = 0.897$) than with steps ($r = 0.815$).
+	\item \textbf{Sleep (3.2 and 3.4):} minutes asleep and time in bed are almost on a line ($r = 0.93$), while minutes asleep and sedentary minutes have a negative correlation ($r = -0.60$). This is mostly because of how the minutes of the day are divided up.
+	\item \textbf{Users (3.3):} three randomly chosen users differ in when their intensity peaks (8:00, 9:00 and 17:00) and in how high the peaks are.
+	\item \textbf{T-tests (Section 4):} day vs.\ night had the most significant difference in calories per hour (about 34.5 calories, $p = 1.7 \times 10^{-10}$), while odd vs.\ even days of the month had the least (about 0.6 calories, $p = 0.42$).
+\end{itemize}
+
 \section*{Introduction}
 
 This report explores the Fitbit Fitness Tracker dataset from Kaggle, which has data from 33 users over the 31 days from April 12 to May 12, 2016.
