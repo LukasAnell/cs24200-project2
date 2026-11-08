@@ -392,6 +392,16 @@ I also only ran tests with two groupings, so while the results confirm my predic
 
 \section*{Conclusion}
 
+In this report, I explored the Fitbit dataset by looking at outliers, merging the files into hourly and per-minute dataframes, comparing pairs of variables, and testing for differences in calories burned.
+Intensity was a better linear predictor of calories per hour than steps, minutes asleep were closely tied to time in bed, and the most significant difference in calories per hour was between day and night, while the least significant was between odd and even days of the month.
+Several of the results turned out to depend on how the data was recorded, such as the 1,440 sedentary minutes on days when a device was probably not worn, and the fact that it seems like time spent asleep is excluded from sedentary minutes.
+
+There are also some limitations to the data, and therefore what the results show.
+It's a small dataset, with just 33 users over 31 days, and I used samples of 3 to 5 users in some of the plots, so the differences between users may not describe other people.
+The correlations also don't show what causes what, and my explanations for the outliers are just guesses, as I don't have any way of determining why a value is unusual just by looking at the data.
+If I were to continue working on this, I would definitely check the causes I suggested.
+For example, I would look at the minute-level data around the outliers, then test more groupings for the t-tests instead of only two.
+
 \section{Reflection}
 \label{sec:reflection}
 
