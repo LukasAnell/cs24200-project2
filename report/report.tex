@@ -38,16 +38,16 @@
 	\label{fig:heart_rate}
 \end{figure}
 
-Out of the 14 useres with heart rate data, 7 of them have at least 28 days of readings, and I picked 5 of them randomly using \texttt{random\_state=1}.
-The readings were about every 5 seconds, so I decided to take the mean of each minute and then the mean of each hour to make plotting them on one date axis was readable.
+Out of the 14 users with heart rate data, 7 of them have at least 28 days of readings, and I picked 5 of them randomly using \texttt{random\_state=1}.
+The readings were about every 5 seconds, so I decided to take the mean of each minute and then the mean of each hour to make plotting them on one date axis readable.
 The main tradeoff of this was that an hourly mean hides short peaks, so the real peaks are probably higher than what the plot actually shows.
 Most of the values for all 5 users fall between 45 and 120 beats per minute, and there seems to be a similar rise and fall daily for everyone.
 
-User 8877689391 sharp spikes on the graph are the result of some outliers that reach about 115 to 160 beats per minute once a day.
+User 8877689391 has sharp spikes that reach about 115 to 160 beats per minute, roughly once a day.
 An hourly mean that high suggests that the user might be giving a sustained effort at something like a workout, but of course this can't be verified.
-User 4558609924 has a spike of about 150 near May 8th, and 5577150313 has a spike of 110 to 130.
-The lowest values are around 43 to 50, and are attributed to users 5577150313 and 4388161847, which could be their resting heart rates during sleep.
-There's also a straight line between May 6 to May 9 for user 5577150313, which is just the plot connecting two points that have a gap in data.
+User 4558609924 has a spike of about 150 near May 8th, and 5577150313 has a few spikes of 110 to 130.
+The lowest values are around 43 to 50, and belong to users 5577150313 and 4388161847, which could be their resting heart rates during sleep.
+There's also a straight line from May 6 to May 9 for user 5577150313, which is just the plot connecting two points that have a gap in the data.
 
 \subsection*{1(b) Minutes Asleep}
 
@@ -58,14 +58,13 @@ There's also a straight line between May 6 to May 9 for user 5577150313, which i
 	\label{fig:minutes_asleep}
 \end{figure}
 
-I used \texttt{TotalMinutesAsleep} from \texttt{sleepDay}, picking 5 out of the 10 users with at least 25 nights at random with the same seed.
-Missing data is just filled in with a line between the two surrounding nights, and 3 of the users are missing at least 3 of the 31 days.
-User 1503960366 is missing 6, and 3977333714 and 4445114986 are missing 3 nights each.
+I used \texttt{TotalMinutesAsleep} from \texttt{sleepDay}, picking 5 out of the 10 users with at least 25 nights at random using \texttt{random\_state=1}.
+Missing data is just filled in with a line between the two surrounding nights, and 3 of the users are missing at least 3 of the 31 days: 1503960366 is missing 6, and 3977333714 and 4445114986 are missing 3 each.
 
 There are a few outliers in the data.
-User 5553957443 has 775 minutes asleep around April 29th, which is the highest value out of the 5 users, and on April 17th 1503960366 had a night of about 700 minutes.
-On the other end of the scale, user 4445114986 has two shorter nights of 98 and about 105 minutes on April 16th and 28th respectively.
-All of these outliers look odd because they're far from the user's usual sleep pattern, and I think the short ones might have been days where the tracker was only worn for part of the night, or if only a nap was recorded.
+User 5553957443 has 775 minutes asleep on April 30th, which is the highest value out of the 5 users, and on April 17th 1503960366 had a night of about 700 minutes.
+On the other end of the scale, user 4445114986 has two shorter nights of 98 and 106 minutes on April 17th and 29th respectively.
+All of these outliers look odd because they're far from the user's usual sleep pattern, and I think the short ones might have been days where the tracker was only worn for part of the night, or where only a nap was recorded.
 The longer ones could be real data, with the user just sleeping for a long time, but I have no way of verifying the reason for the outliers.
 
 \subsection*{1(c) Total Steps}
@@ -77,15 +76,15 @@ The longer ones could be real data, with the user just sleeping for a long time,
 	\label{fig:total_steps}
 \end{figure}
 
-For this plot, I used \texttt{TotalSteps} from the \texttt{dailyActivity} dataset, picking 5 of the 21 users have all 31 days at random.
-Four of the users tend to have between 5,000 to 15,000 steps per day, with means of about 8,700 to 14,800.
+For this plot, I used \texttt{TotalSteps} from the \texttt{dailyActivity} dataset, picking 5 of the 21 users who have all 31 days at random.
+Four of the users tend to have between 5,000 and 15,000 steps per day, with means of about 8,700 to 14,800.
 
 The biggest outlier in this data is user 1927972279, who has at most 3,790 steps per day, and 14 days with 0 steps.
-On April 16, the recorded sedentary minutes were 1,440, so I think this and the other days this happened are days when the device wasn't worn or carried, rather than days with no walking at all, but that's just a guess.
+On 13 of those 14 days, the recorded sedentary minutes were 1,440 (a full day), so I think these were days when the device wasn't worn or carried, rather than days with no walking at all, but that's just a guess.
 These days also pull down any averages that include this user.
-There are also high outliers, with users 80534675328 and 4388161847 having days of about 22,000 to 23,000 steps around April 25 and May 6, which is high but still possible.
-For the other users, 8053475328 had a low of 1,200 steps and 6962181067 had a low of 1,600 steps.
-These days were much smaller than their usual, and could be attributed to rest days or the day not being worn for part of the day.
+There are also high outliers, with user 8053475328 having a day of about 23,000 steps on April 24th and user 4388161847 having a day of about 22,800 steps on May 7th, which is high but still possible.
+For the other users, 8053475328 had a low of about 1,200 steps and 6962181067 had a low of about 1,600 steps.
+These days were much lower than their usual, and could be attributed to rest days or the device not being worn for part of the day.
 
 \subsection*{1(d) Weight}
 
@@ -96,14 +95,14 @@ These days were much smaller than their usual, and could be attributed to rest d
 	\label{fig:weight}
 \end{figure}
 
-This plot is only for user 6962181067, whose weight records cover 30 out of the 31 days, the most of any other user.
-All 30 records are manual entries, and the weights are rounded to 0.1 kg, so each value was typed in by the user rather than coming from a smart scale.
+This plot is only for user 6962181067, whose weight records cover 30 out of the 31 days, the most of any user.
+All 30 records are manual entries (\texttt{IsManualReport} is true for every one), so they were entered by hand rather than coming from a smart scale, and the weights are rounded to 0.1 kg.
 The user's weight stays between 61.0 and 62.5 kg for the whole month, starting at 62.5 and ending at 61.9.
 
-The y-axis is only between 61 and 62.5, so the changes look much bigger than they actually are.
-In the first few days, there's a quick 1 kg drop from 62.5 to 61.5 kg, which stands out, and the 1.2 kg jump from 61.2 to 62.4 kg around May 10 does as well.
+The y-axis is only between 61 and 62.5 kg, so the changes look much bigger than they actually are.
+In the first few days, there's a quick 1 kg drop from 62.5 to 61.5 kg, which stands out, and the 1.2 kg jump from 61.2 to 62.4 kg on May 9th does as well.
 Someone's body weight changing by over 1 kg in a day or two is more than what I'd expect normally, and it could be affected by the time of day the measurement was taken, how much food or water was in the body, or a miscalibrated scale.
-There also seems to be a straight line near April 26 to 28, where there's a missing day.
+There also seems to be a straight line between April 25 and April 27, because there's no record for April 26.
 
 \section{Data Processing}
 \label{sec:s2}
